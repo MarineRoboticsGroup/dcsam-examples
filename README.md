@@ -12,19 +12,18 @@ introducing inlier/outlier discrete hypotheses for untrusted loop closure edges.
 To build the ICP and robust PGO examples:
 
 ```bash
-~/$ mkdir build
-~/$ cd build
-~/build$ cmake ..
-~/build$ make -j
+~ $ mkdir build
+~ $ cd build
+~/build $ cmake ..
+~/build $ make -j
 ```
 
 To run the ICP example:
 ```bash
-~/build/examples$ ./icp (path to source cloud) (path to target cloud)
+~/build/examples $ ./icp (path to source cloud) (path to target cloud)
 ```
 
 To run the robust pose-graph optimization example:
 ```bash
-
-~/build/examples$ ./robust_pgo_mc [.g2o file] [outlier rate (int >= 0; default 0)] [is3D (0/1; default 1)] [num trials (default 1)]
+~/build/examples $ ./robust_pgo_mc [.g2o file] [outlier rate (int >= 0; default 0)] [is3D (0/1; default 1)] [num trials (default 1)]
 ```

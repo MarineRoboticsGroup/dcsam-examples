@@ -61,7 +61,7 @@ void run_experiment3D(const gtsam::NonlinearFactorGraph& graph,
 
   // Keep track of known inliers (odometry) for GNC.
   size_t known_inlier_idx = 0;
-  std::vector<size_t> knownInliers;
+  gtsam::GncParams<gtsam::LevenbergMarquardtParams>::IndexVector knownInliers;
 
   // Add all good measurements.
   for (const auto& factor : graphWithOutliers) {
@@ -433,7 +433,7 @@ void run_experiment2D(const gtsam::NonlinearFactorGraph& graph,
 
   // Keep track of known inliers (odometry) for GNC.
   size_t known_inlier_idx = 0;
-  std::vector<size_t> knownInliers;
+  gtsam::GncParams<gtsam::LevenbergMarquardtParams>::IndexVector knownInliers;
 
   // Add all good measurements.
   for (const auto& factor : graphWithOutliers) {

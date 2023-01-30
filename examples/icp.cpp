@@ -91,7 +91,7 @@ int main(int argc, char** argv) {
   for (size_t i = 0; i < source.size(); i++) {
     initial_discrete[gtsam::Symbol('d', i)] = 0;
   }
-  initial_values.insert(poseKey[0], gtsam::Pose3::identity());
+  initial_values.insert(poseKey[0], gtsam::Pose3::Identity());
 
   // Compute the first iterate.
   dcsam.update(hfg, initial_values, initial_discrete);
