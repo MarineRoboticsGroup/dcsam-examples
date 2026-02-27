@@ -40,12 +40,12 @@ class PosePointFactor : public gtsam::NonlinearFactor {
 
   size_t dim() const override { return 3; };
 
-  boost::shared_ptr<gtsam::GaussianFactor> linearize(
+  std::shared_ptr<gtsam::GaussianFactor> linearize(
       const gtsam::Values &values) const override {
     gtsam::Pose3 T = values.at<gtsam::Pose3>(keys_[0]);
     Eigen::Matrix<double, 3, 6> H;
-    gtsam::Point3 transformed_p = T.transformFrom(p_, &H);
-    return boost::make_shared<gtsam::JacobianFactor>(keys_[0], H,
-                                                     -error_vector(values));
+    T.transformFrom(p_, &H);  // For obtaining the Jacobian
+    return std::make_shared<gtsam::JacobianFactor>(keys_[0], H,
+                                                   -error_vector(values));
   }
 };

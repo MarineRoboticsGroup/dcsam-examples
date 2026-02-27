@@ -6,8 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 add_compile_options(-Wall -Wpedantic -Wextra)
 
 # External package dependencies.
-find_package(GTSAM 4.2 REQUIRED)
-find_package(Eigen3 3.3 REQUIRED)
+find_package(GTSAM REQUIRED)  # Use Eigen bundled with GTSAM.
 find_package(dcsam REQUIRED)
 
 include_directories(include)
