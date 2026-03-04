@@ -84,3 +84,5 @@ build/
 .sass-cache/
 Gemfile.lock
 _site/
+
+output

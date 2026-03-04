@@ -21,7 +21,6 @@ std::vector<gtsam::Point3> read_xyz_file(const std::string& path_to_file) {
   // Open file for reading.
   std::ifstream infile(path_to_file);
 
-  size_t i = 0;
   while (std::getline(infile, line)) {
     // Construct a stream from line.
     std::stringstream strstrm(line);

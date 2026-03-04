@@ -8,6 +8,7 @@
 #include <gtsam/nonlinear/LevenbergMarquardtOptimizer.h>
 #include <gtsam/nonlinear/NonlinearFactorGraph.h>
 #include <gtsam/slam/dataset.h>
+#include <filesystem>
 
 #include <chrono>
 #include <iostream>
@@ -29,6 +30,8 @@ void run_experiment3D(const gtsam::NonlinearFactorGraph& graph,
   /// 1. Build outlier graph.
   // Add prior on the pose having index (key) = 0
   gtsam::NonlinearFactorGraph graphWithOutliers = graph;
+  std::cout << "graph size: " << graph.size() << std::endl;
+  return;
 
   gtsam::Vector6 prior_sigmas;
   prior_sigmas << 1e-8, 1e-8, 1e-8, 1e-6, 1e-6, 1e-6;
@@ -66,8 +69,8 @@ void run_experiment3D(const gtsam::NonlinearFactorGraph& graph,
   // Add all good measurements.
   for (const auto& factor : graphWithOutliers) {
     // Ensure that we correctly retrieve a BetweenFactor
-    boost::shared_ptr<gtsam::BetweenFactor<gtsam::Pose3>> bwFactor =
-        boost::dynamic_pointer_cast<gtsam::BetweenFactor<gtsam::Pose3>>(factor);
+    std::shared_ptr<gtsam::BetweenFactor<gtsam::Pose3>> bwFactor =
+        std::dynamic_pointer_cast<gtsam::BetweenFactor<gtsam::Pose3>>(factor);
     if (bwFactor && isLoopClosure(*bwFactor)) {
       // If the meaasurement is a loop closure, we add inlier and outlier
       // hypotheses.
@@ -135,8 +138,8 @@ void run_experiment3D(const gtsam::NonlinearFactorGraph& graph,
   // Add all outlier measurements.
   for (const auto& factor : outlierGraph) {
     // Ensure that we correctly retrieve a BetweenFactor
-    boost::shared_ptr<gtsam::BetweenFactor<gtsam::Pose3>> bwFactor =
-        boost::dynamic_pointer_cast<gtsam::BetweenFactor<gtsam::Pose3>>(factor);
+    std::shared_ptr<gtsam::BetweenFactor<gtsam::Pose3>> bwFactor =
+        std::dynamic_pointer_cast<gtsam::BetweenFactor<gtsam::Pose3>>(factor);
     if (bwFactor && isLoopClosure(*bwFactor)) {
       // If the meaasurement is a loop closure, we add inlier and outlier
       // hypotheses.
@@ -356,11 +359,12 @@ void run_experiment3D(const gtsam::NonlinearFactorGraph& graph,
   std::cout << "Total time [GNC]: " << total_time_gnc << " seconds."
             << std::endl;
 
-  std::cout << "OUTLIER PCT" << std::to_string((int)(100 * outlier_pct))
+  std::cout << "OUTLIER PCT " << std::to_string((int)(100 * outlier_pct))
             << std::endl;
   std::string path_prefix = "../../output/robust_pgo_vanilla/" + dataset_name +
                             "/" + std::to_string((int)(100 * outlier_pct)) +
                             "/" + std::to_string(random_seed) + "/";
+  std::filesystem::create_directories(path_prefix);
 
   std::cout << "path_prefix: " << path_prefix << std::endl;
 
@@ -418,9 +422,6 @@ void run_experiment2D(const gtsam::NonlinearFactorGraph& graph,
   double outlier_prob = 0.5;
   std::vector<double> lc_probabilities{(1.0 - outlier_prob), outlier_prob};
 
-  // double outlier_prob = 0.5;
-  // std::vector<double> lc_probabilities{(1.0 - outlier_prob), outlier_prob};
-
   // We'll use this to save the inlier model so we can create the inlier
   // hypotheses.
   gtsam::SharedNoiseModel inlier_model;
@@ -438,8 +439,8 @@ void run_experiment2D(const gtsam::NonlinearFactorGraph& graph,
   // Add all good measurements.
   for (const auto& factor : graphWithOutliers) {
     // Ensure that we correctly retrieve a BetweenFactor
-    boost::shared_ptr<gtsam::BetweenFactor<gtsam::Pose2>> bwFactor =
-        boost::dynamic_pointer_cast<gtsam::BetweenFactor<gtsam::Pose2>>(factor);
+    std::shared_ptr<gtsam::BetweenFactor<gtsam::Pose2>> bwFactor =
+        std::dynamic_pointer_cast<gtsam::BetweenFactor<gtsam::Pose2>>(factor);
     if (bwFactor && isLoopClosure(*bwFactor)) {
       // If the meaasurement is a loop closure, we add inlier and outlier
       // hypotheses.
@@ -508,8 +509,8 @@ void run_experiment2D(const gtsam::NonlinearFactorGraph& graph,
   // Add all outlier measurements.
   for (const auto& factor : outlierGraph) {
     // Ensure that we correctly retrieve a BetweenFactor
-    boost::shared_ptr<gtsam::BetweenFactor<gtsam::Pose2>> bwFactor =
-        boost::dynamic_pointer_cast<gtsam::BetweenFactor<gtsam::Pose2>>(factor);
+    std::shared_ptr<gtsam::BetweenFactor<gtsam::Pose2>> bwFactor =
+        std::dynamic_pointer_cast<gtsam::BetweenFactor<gtsam::Pose2>>(factor);
     if (bwFactor && isLoopClosure(*bwFactor)) {
       // If the meaasurement is a loop closure, we add inlier and outlier
       // hypotheses.
@@ -546,6 +547,7 @@ void run_experiment2D(const gtsam::NonlinearFactorGraph& graph,
     }
   }
   std::cout << "HFG size: " << hfg.size() << std::endl;
+  std::cout << "Number of discrete factors:" << hfg.discreteGraph().size() << std::endl;
 
   // Currently DCSAM requires that we provide initial discrete values, but
   // they aren't actually used since we perform the discrete solve first, so
@@ -737,11 +739,12 @@ void run_experiment2D(const gtsam::NonlinearFactorGraph& graph,
   std::cout << "Total time [GNC]: " << total_time_gnc << " seconds."
             << std::endl;
 
-  std::cout << "OUTLIER PCT" << std::to_string((int)(100 * outlier_pct))
+  std::cout << "OUTLIER PCT " << std::to_string((int)(100 * outlier_pct))
             << std::endl;
   std::string path_prefix = "../../output/robust_pgo_vanilla/" + dataset_name +
                             "/" + std::to_string((int)(100 * outlier_pct)) +
                             "/" + std::to_string(random_seed) + "/";
+  std::filesystem::create_directories(path_prefix);
 
   std::cout << "path_prefix: " << path_prefix << std::endl;
 
@@ -811,7 +814,7 @@ int main(int argc, char** argv) {
   gtsam::NonlinearFactorGraph::shared_ptr graph;
   gtsam::Values::shared_ptr initial;
 
-  boost::tie(graph, initial) = gtsam::readG2o(path, is3D);
+  std::tie(graph, initial) = gtsam::readG2o(path, is3D);
 
   std::cout << "Loaded a graph of size: " << graph->size() << std::endl;
 
